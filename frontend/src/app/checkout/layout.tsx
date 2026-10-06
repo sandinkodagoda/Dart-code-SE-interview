@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Secure Checkout — PayHere & WhatsApp Direct Order | TechGadgets',
+  title: 'Secure Checkout — PayHere & WhatsApp Direct Order | Nexora',
   description:
     'Complete your order with zero account hassle. Secure PayHere card gateway or direct WhatsApp order with Islandwide delivery.',
 };

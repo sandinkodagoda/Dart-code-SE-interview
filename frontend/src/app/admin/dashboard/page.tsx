@@ -90,7 +90,7 @@ export default function AdminDashboardPage() {
             Operations Overview
           </h1>
           <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.875rem', marginTop: '0.2rem' }}>
-            Live performance, order flow, and inventory tracking for TechGadgets Store
+            Live performance, order flow, and inventory tracking for Nexora
           </p>
         </div>
 

@@ -1,5 +1,5 @@
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
 
 :root {
   /* Primary Brand Colors */
@@ -36,7 +36,7 @@
   --color-info-bg: #f0f9ff;
 
   /* Layout Tokens */
-  --max-width: 1360px;
+  --max-width: 90%;
   --header-height: 80px;
   --radius-sm: 6px;
   --radius-md: 10px;
@@ -75,8 +75,6 @@ a {
 
 button {
   cursor: pointer;
-  border: none;
-  background: none;
   font-family: inherit;
 }
 
@@ -176,4 +174,17 @@ button {
 
 .animate-pulse-glow {
   animation: pulseGlow 2s infinite ease-in-out;
+}
+
+/* Responsive display utilities */
+@media (min-width: 768px) {
+  .mobile-only {
+    display: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .desktop-only {
+    display: none !important;
+  }
 }

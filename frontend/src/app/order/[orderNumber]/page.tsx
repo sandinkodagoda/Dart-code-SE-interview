@@ -291,7 +291,7 @@ export default function OrderDetailPage() {
             <Button variant="secondary">Continue Shopping</Button>
           </Link>
 
-          <a href="https://wa.me/94771234567" target="_blank" rel="noreferrer">
+          <a href="https://wa.me/94711093799" target="_blank" rel="noreferrer">
             <Button variant="outline" leftIcon={<HelpCircle size={16} />}>
               Need Help With This Order?
             </Button>

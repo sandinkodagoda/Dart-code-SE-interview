@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Shopping Cart — Review Items & Delivery | TechGadgets',
+  title: 'Shopping Cart — Review Items & Delivery | Nexora',
   description:
     'Review your electronic items, check free delivery eligibility, and proceed to guest checkout.',
 };

@@ -2,13 +2,23 @@
 
 import React, { useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useCartStore } from '@/stores/cart.store';
 import { formatLKR } from '@/lib/currency';
-import { ShoppingBag, X, Plus, Minus, Trash2, ArrowRight, MessageSquare, ShieldCheck, Truck } from 'lucide-react';
+import {
+  ShoppingBag,
+  X,
+  Plus,
+  Minus,
+  Trash2,
+  ArrowRight,
+  MessageSquare,
+  ShieldCheck,
+  Truck,
+} from 'lucide-react';
 
 const FREE_SHIPPING_THRESHOLD = 10000;
+const FALLBACK_IMG = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300';
 
 export default function CartDrawer() {
   const router = useRouter();
@@ -59,95 +69,283 @@ export default function CartDrawer() {
 
   const handleWhatsAppOrder = () => {
     const textLines = [
-      '👋 Hello TechGadgets! I would like to order the following items from my cart:',
+      '👋 Hello Nexora! I would like to order the following items from my cart:',
       '',
       ...items.map(
-        (item) => `• ${item.product.name} (x${item.quantity}) - ${formatLKR(Number(item.product.price) * item.quantity)}`
+        (item) =>
+          `• ${item.product.name} (x${item.quantity}) - ${formatLKR(
+            Number(item.product.price) * item.quantity,
+          )}`,
       ),
       '',
       `Subtotal: ${formatLKR(subtotal)}`,
       `Delivery: ${deliveryFee === 0 ? 'FREE' : formatLKR(deliveryFee)}`,
       `Total: ${formatLKR(total)}`,
       '',
-      'Please confirm availability and bank transfer details!',
+      'Please confirm availability and dispatch schedule!',
     ];
     const encoded = encodeURIComponent(textLines.join('\n'));
-    const phone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '94770000000';
+    const phone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '94711093799';
     window.open(`https://wa.me/${phone}?text=${encoded}`, '_blank');
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden">
-      {/* Backdrop */}
+    <div
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 9999,
+        overflow: 'hidden',
+      }}
+    >
+      {/* 1. Backdrop Overlay */}
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
         onClick={closeDrawer}
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundColor: 'rgba(15, 23, 42, 0.6)',
+          backdropFilter: 'blur(4px)',
+          transition: 'opacity 0.25s ease',
+        }}
         aria-hidden="true"
       />
 
-      <div className="fixed inset-y-0 right-0 flex max-w-full pl-10">
-        <div className="w-screen max-w-md bg-white shadow-2xl flex flex-col transform transition-transform duration-300 ease-in-out">
-          
-          {/* Header */}
-          <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
-            <div className="flex items-center gap-2">
-              <ShoppingBag className="w-5 h-5 text-blue-600" />
-              <h2 className="text-base font-bold text-slate-900 tracking-tight">
-                YOUR SHOPPING CART <span className="text-blue-600">({itemCount})</span>
-              </h2>
-            </div>
-            <button
-              onClick={closeDrawer}
-              className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 transition"
-              aria-label="Close drawer"
+      {/* 2. Slide-Over Panel Container */}
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          bottom: 0,
+          right: 0,
+          width: '100vw',
+          maxWidth: '480px',
+          display: 'flex',
+        }}
+      >
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            backgroundColor: '#ffffff',
+            boxShadow: '-8px 0 30px rgba(0, 0, 0, 0.15)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            overflow: 'hidden',
+          }}
+        >
+          {/* ── TOP SECTION: Header & Free Shipping Bar ───────── */}
+          <div>
+            {/* Header */}
+            <div
+              style={{
+                padding: '1.25rem 1.5rem',
+                borderBottom: '1px solid #e2e8f0',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                backgroundColor: '#ffffff',
+              }}
             >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-
-          {/* Free Shipping Alert & Progress Meter */}
-          <div className="px-6 py-3.5 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100/60">
-            {subtotal >= FREE_SHIPPING_THRESHOLD ? (
-              <div className="flex items-center gap-2 text-xs font-semibold text-emerald-700">
-                <Truck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                <span>🎉 You unlocked <strong>FREE Express Delivery</strong> nationwide!</span>
-              </div>
-            ) : (
-              <div>
-                <div className="flex items-center justify-between text-xs text-slate-700 font-medium mb-1.5">
-                  <span className="flex items-center gap-1.5">
-                    <Truck className="w-3.5 h-3.5 text-blue-600" />
-                    Add <strong className="text-blue-700">{formatLKR(amountNeeded)}</strong> more for <strong>FREE Delivery</strong>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                <div
+                  style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '10px',
+                    backgroundColor: '#eff6ff',
+                    color: '#2563eb',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <ShoppingBag size={20} />
+                </div>
+                <div>
+                  <h2
+                    style={{
+                      fontSize: '1.05rem',
+                      fontWeight: 800,
+                      color: '#0f172a',
+                      letterSpacing: '-0.02em',
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    Shopping Cart
+                  </h2>
+                  <span style={{ fontSize: '0.78rem', color: '#64748b', fontWeight: 600 }}>
+                    {itemCount} {itemCount === 1 ? 'item' : 'items'} in your cart
                   </span>
-                  <span className="font-bold text-blue-600">{shippingProgress}%</span>
-                </div>
-                <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-                  <div
-                    className="bg-gradient-to-r from-blue-600 to-indigo-600 h-1.5 rounded-full transition-all duration-500"
-                    style={{ width: `${shippingProgress}%` }}
-                  />
                 </div>
               </div>
-            )}
+
+              <button
+                onClick={closeDrawer}
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
+                  border: '1px solid #e2e8f0',
+                  backgroundColor: '#f8fafc',
+                  color: '#64748b',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'background-color 0.15s ease',
+                }}
+                aria-label="Close cart drawer"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Free Shipping Alert & Progress Meter */}
+            <div
+              style={{
+                padding: '0.85rem 1.5rem',
+                backgroundColor: subtotal >= FREE_SHIPPING_THRESHOLD ? '#ecfdf5' : '#eff6ff',
+                borderBottom: `1px solid ${
+                  subtotal >= FREE_SHIPPING_THRESHOLD ? '#bbf7d0' : '#dbeafe'
+                }`,
+              }}
+            >
+              {subtotal >= FREE_SHIPPING_THRESHOLD ? (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    fontSize: '0.8125rem',
+                    fontWeight: 700,
+                    color: '#065f46',
+                  }}
+                >
+                  <Truck size={17} color="#059669" />
+                  <span>
+                    🎉 You unlocked <strong>FREE Express Delivery</strong> nationwide!
+                  </span>
+                </div>
+              ) : (
+                <div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      fontSize: '0.8rem',
+                      color: '#1e3a8a',
+                      fontWeight: 600,
+                      marginBottom: '0.45rem',
+                    }}
+                  >
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                      <Truck size={15} color="#2563eb" />
+                      Add <strong style={{ color: '#2563eb' }}>{formatLKR(amountNeeded)}</strong> more
+                      for <strong>FREE Delivery</strong>
+                    </span>
+                    <span style={{ fontWeight: 800, color: '#2563eb' }}>{shippingProgress}%</span>
+                  </div>
+                  <div
+                    style={{
+                      width: '100%',
+                      height: '6px',
+                      backgroundColor: '#dbeafe',
+                      borderRadius: '9999px',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: `${shippingProgress}%`,
+                        height: '100%',
+                        backgroundColor: '#2563eb',
+                        borderRadius: '9999px',
+                        transition: 'width 0.4s ease',
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* Cart Item List */}
-          <div className="flex-1 overflow-y-auto px-6 py-4 divide-y divide-slate-100">
+          {/* ── MIDDLE SECTION: Cart Items List ──────────────── */}
+          <div
+            style={{
+              flex: 1,
+              overflowY: 'auto',
+              padding: '1.25rem 1.5rem',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1rem',
+            }}
+          >
             {items.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center text-center py-12">
-                <div className="w-16 h-16 rounded-2xl bg-blue-50 text-blue-500 flex items-center justify-center mb-4">
-                  <ShoppingBag className="w-8 h-8 stroke-[1.5]" />
+              <div
+                style={{
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  textAlign: 'center',
+                  padding: '3rem 1rem',
+                }}
+              >
+                <div
+                  style={{
+                    width: '72px',
+                    height: '72px',
+                    borderRadius: '20px',
+                    backgroundColor: '#eff6ff',
+                    color: '#2563eb',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '1rem',
+                  }}
+                >
+                  <ShoppingBag size={36} />
                 </div>
-                <h3 className="text-base font-bold text-slate-800 mb-1">Your cart is empty</h3>
-                <p className="text-xs text-slate-500 mb-6 max-w-xs">
-                  Looks like you haven't added any gear yet. Discover top gadgets now!
+                <h3
+                  style={{
+                    fontSize: '1.15rem',
+                    fontWeight: 800,
+                    color: '#0f172a',
+                    marginBottom: '0.35rem',
+                  }}
+                >
+                  Your cart is empty
+                </h3>
+                <p
+                  style={{
+                    fontSize: '0.875rem',
+                    color: '#64748b',
+                    marginBottom: '1.5rem',
+                    maxWidth: '260px',
+                  }}
+                >
+                  Explore our latest flagship smartphones, laptops, and gadgets!
                 </p>
                 <button
                   onClick={() => {
                     closeDrawer();
                     router.push('/shop');
                   }}
-                  className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-md shadow-blue-500/20 transition"
+                  style={{
+                    padding: '0.75rem 1.5rem',
+                    backgroundColor: '#2563eb',
+                    color: '#ffffff',
+                    fontSize: '0.875rem',
+                    fontWeight: 700,
+                    borderRadius: '12px',
+                    border: 'none',
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 12px rgba(37, 99, 235, 0.25)',
+                  }}
                 >
                   Explore Catalog
                 </button>
@@ -155,75 +353,190 @@ export default function CartDrawer() {
             ) : (
               items.map((item) => {
                 const product = item.product;
-                const img = product.images?.[0] || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300';
+                const img =
+                  product.primaryImage?.imageUrl ||
+                  product.images?.[0]?.imageUrl ||
+                  FALLBACK_IMG;
+
                 return (
-                  <div key={product.id} className="py-4 flex gap-4 items-center">
+                  <div
+                    key={product.id}
+                    style={{
+                      display: 'flex',
+                      gap: '1rem',
+                      alignItems: 'center',
+                      padding: '0.85rem',
+                      backgroundColor: '#ffffff',
+                      borderRadius: '14px',
+                      border: '1.5px solid #f1f5f9',
+                      transition: 'border-color 0.15s ease',
+                    }}
+                  >
                     {/* Thumbnail */}
-                    <div className="relative w-16 h-16 rounded-xl bg-slate-50 border border-slate-100 flex-shrink-0 overflow-hidden flex items-center justify-center">
-                      <Image
+                    <div
+                      style={{
+                        position: 'relative',
+                        width: '72px',
+                        height: '72px',
+                        borderRadius: '12px',
+                        backgroundColor: '#f8fafc',
+                        border: '1px solid #e2e8f0',
+                        flexShrink: 0,
+                        overflow: 'hidden',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <img
                         src={img}
                         alt={product.name}
-                        fill
-                        sizes="64px"
-                        className="object-contain p-1.5"
+                        loading="lazy"
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'contain',
+                          padding: '0.35rem',
+                        }}
                         onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.src = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300';
+                          (e.target as HTMLImageElement).src = FALLBACK_IMG;
                         }}
                       />
                     </div>
 
-                    {/* Details */}
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-xs font-semibold text-slate-900 truncate mb-0.5">
+                    {/* Product Details */}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <h4
+                        style={{
+                          fontSize: '0.875rem',
+                          fontWeight: 700,
+                          color: '#0f172a',
+                          lineHeight: 1.35,
+                          marginBottom: '0.2rem',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
                         <Link
                           href={`/product/${product.slug}`}
                           onClick={closeDrawer}
-                          className="hover:text-blue-600 transition"
+                          style={{ color: '#0f172a', textDecoration: 'none' }}
                         >
                           {product.name}
                         </Link>
                       </h4>
-                      <p className="text-[11px] text-slate-500 mb-2">
-                        {product.brand?.name || 'Official Tech'} · {product.category?.name || 'Gadgets'}
+
+                      <p
+                        style={{
+                          fontSize: '0.75rem',
+                          color: '#64748b',
+                          marginBottom: '0.65rem',
+                          fontWeight: 500,
+                        }}
+                      >
+                        {product.brand?.name || 'Brand'} · {product.category?.name || 'Gadgets'}
                       </p>
 
-                      <div className="flex items-center justify-between">
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          gap: '0.5rem',
+                        }}
+                      >
                         {/* Stepper */}
-                        <div className="flex items-center border border-slate-200 rounded-lg overflow-hidden bg-slate-50">
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            border: '1.5px solid #cbd5e1',
+                            borderRadius: '8px',
+                            backgroundColor: '#ffffff',
+                            overflow: 'hidden',
+                          }}
+                        >
                           <button
                             onClick={() => updateQuantity(product.id, item.quantity - 1)}
-                            className="p-1 text-slate-600 hover:bg-slate-200 transition"
+                            style={{
+                              width: '28px',
+                              height: '28px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              color: '#334155',
+                              border: 'none',
+                              backgroundColor: 'transparent',
+                              cursor: 'pointer',
+                            }}
                             aria-label="Decrease quantity"
                           >
-                            <Minus className="w-3 h-3" />
+                            <Minus size={13} />
                           </button>
-                          <span className="px-2 text-xs font-bold text-slate-800">
+                          <span
+                            style={{
+                              padding: '0 0.5rem',
+                              fontSize: '0.8125rem',
+                              fontWeight: 800,
+                              color: '#0f172a',
+                              minWidth: '22px',
+                              textAlign: 'center',
+                            }}
+                          >
                             {item.quantity}
                           </span>
                           <button
                             onClick={() => updateQuantity(product.id, item.quantity + 1)}
-                            className="p-1 text-slate-600 hover:bg-slate-200 transition"
+                            style={{
+                              width: '28px',
+                              height: '28px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              color: '#334155',
+                              border: 'none',
+                              backgroundColor: 'transparent',
+                              cursor: 'pointer',
+                            }}
                             aria-label="Increase quantity"
                           >
-                            <Plus className="w-3 h-3" />
+                            <Plus size={13} />
                           </button>
                         </div>
 
                         {/* Price */}
-                        <span className="text-xs font-bold text-slate-900">
+                        <span
+                          style={{
+                            fontSize: '0.875rem',
+                            fontWeight: 800,
+                            color: '#0f172a',
+                          }}
+                        >
                           {formatLKR(Number(product.price) * item.quantity)}
                         </span>
                       </div>
                     </div>
 
-                    {/* Remove Icon */}
+                    {/* Remove Action */}
                     <button
                       onClick={() => removeItem(product.id)}
-                      className="p-1 text-slate-400 hover:text-rose-500 transition ml-1"
+                      style={{
+                        padding: '0.45rem',
+                        color: '#94a3b8',
+                        borderRadius: '8px',
+                        border: 'none',
+                        backgroundColor: 'transparent',
+                        cursor: 'pointer',
+                        transition: 'color 0.15s ease',
+                        flexShrink: 0,
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.color = '#ef4444')}
+                      onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}
                       aria-label="Remove item"
+                      title="Remove from cart"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 size={16} />
                     </button>
                   </div>
                 );
@@ -231,60 +544,158 @@ export default function CartDrawer() {
             )}
           </div>
 
-          {/* Footer / Checkout Actions */}
+          {/* ── BOTTOM SECTION: Checkout Summary & Actions ──── */}
           {items.length > 0 && (
-            <div className="p-6 border-t border-slate-100 bg-slate-50/70 space-y-3">
-              <div className="space-y-1.5 text-xs">
-                <div className="flex justify-between text-slate-600">
+            <div
+              style={{
+                padding: '1.25rem 1.5rem',
+                borderTop: '1.5px solid #e2e8f0',
+                backgroundColor: '#ffffff',
+                boxShadow: '0 -4px 16px rgba(0, 0, 0, 0.04)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.85rem',
+              }}
+            >
+              {/* Financial Breakdown */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    fontSize: '0.85rem',
+                    color: '#64748b',
+                  }}
+                >
                   <span>Subtotal</span>
-                  <span className="font-semibold text-slate-900">{formatLKR(subtotal)}</span>
+                  <span style={{ fontWeight: 700, color: '#0f172a' }}>{formatLKR(subtotal)}</span>
                 </div>
-                <div className="flex justify-between text-slate-600">
-                  <span>Estimated Delivery</span>
-                  <span className={deliveryFee === 0 ? 'font-semibold text-emerald-600' : 'font-semibold text-slate-900'}>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    fontSize: '0.85rem',
+                    color: '#64748b',
+                  }}
+                >
+                  <span>Islandwide Delivery</span>
+                  <span
+                    style={{
+                      fontWeight: 800,
+                      color: deliveryFee === 0 ? '#059669' : '#0f172a',
+                    }}
+                  >
                     {deliveryFee === 0 ? 'FREE' : formatLKR(deliveryFee)}
                   </span>
                 </div>
-                <div className="flex justify-between text-sm font-bold text-slate-900 pt-2 border-t border-slate-200">
-                  <span>Total</span>
-                  <span className="text-blue-600 text-base">{formatLKR(total)}</span>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'baseline',
+                    paddingTop: '0.65rem',
+                    borderTop: '1px solid #f1f5f9',
+                  }}
+                >
+                  <span style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0f172a' }}>
+                    Total ({itemCount} {itemCount === 1 ? 'item' : 'items'})
+                  </span>
+                  <span style={{ fontSize: '1.25rem', fontWeight: 900, color: '#2563eb' }}>
+                    {formatLKR(total)}
+                  </span>
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="space-y-2 pt-2">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', paddingTop: '0.25rem' }}>
                 <button
                   onClick={handleCheckout}
-                  className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 transition duration-200"
+                  style={{
+                    width: '100%',
+                    padding: '0.85rem 1.25rem',
+                    backgroundColor: '#2563eb',
+                    color: '#ffffff',
+                    fontSize: '0.9rem',
+                    fontWeight: 800,
+                    borderRadius: '12px',
+                    border: 'none',
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 14px rgba(37, 99, 235, 0.3)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.5rem',
+                    transition: 'background-color 0.15s ease',
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#1d4ed8')}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#2563eb')}
                 >
                   <span>Proceed to Checkout</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight size={16} />
                 </button>
 
                 <button
                   onClick={handleWhatsAppOrder}
-                  className="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md shadow-emerald-600/20 flex items-center justify-center gap-2 transition duration-200"
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem 1.25rem',
+                    backgroundColor: '#16a34a',
+                    color: '#ffffff',
+                    fontSize: '0.85rem',
+                    fontWeight: 700,
+                    borderRadius: '12px',
+                    border: 'none',
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 12px rgba(22, 163, 74, 0.2)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.5rem',
+                    transition: 'background-color 0.15s ease',
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#15803d')}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#16a34a')}
                 >
-                  <MessageSquare className="w-4 h-4" />
+                  <MessageSquare size={16} />
                   <span>Order via WhatsApp</span>
                 </button>
               </div>
 
-              {/* View Full Cart Link */}
-              <div className="text-center pt-1">
+              {/* Footer Links & Guarantee */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  paddingTop: '0.25rem',
+                }}
+              >
                 <Link
                   href="/cart"
                   onClick={closeDrawer}
-                  className="text-[11px] font-semibold text-slate-500 hover:text-blue-600 underline-offset-4 hover:underline transition"
+                  style={{
+                    fontSize: '0.78rem',
+                    fontWeight: 700,
+                    color: '#64748b',
+                    textDecoration: 'underline',
+                    textUnderlineOffset: '3px',
+                  }}
                 >
-                  View Full Cart & Edit Notes →
+                  View Full Cart Page →
                 </Link>
-              </div>
 
-              {/* Assurance Trust Tag */}
-              <div className="flex items-center justify-center gap-1.5 text-[10px] text-slate-400 pt-1">
-                <ShieldCheck className="w-3.5 h-3.5 text-slate-400" />
-                <span>100% Genuine Products · PayHere SSL Secured</span>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.35rem',
+                    fontSize: '0.72rem',
+                    color: '#94a3b8',
+                  }}
+                >
+                  <ShieldCheck size={14} color="#059669" />
+                  <span>SSL Secured & Guaranteed</span>
+                </div>
               </div>
             </div>
           )}

@@ -62,27 +62,18 @@ export default function AdminLoginPage() {
       >
         {/* Brand Icon & Heading */}
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <div
-            style={{
-              width: '56px',
-              height: '56px',
-              borderRadius: '14px',
-              backgroundColor: '#2563eb',
-              color: '#ffffff',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 1.25rem',
-              boxShadow: '0 8px 16px rgba(37, 99, 235, 0.4)',
-            }}
-          >
-            <ShieldCheck size={32} />
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.25rem' }}>
+            <img
+              src="/logo-white.svg"
+              alt="Nexora Logo"
+              style={{ height: '42px', width: 'auto', objectFit: 'contain' }}
+            />
           </div>
           <h1 style={{ fontSize: '1.65rem', fontWeight: 800, letterSpacing: '-0.02em', marginBottom: '0.4rem' }}>
-            Operations Portal
+            Staff Admin Portal
           </h1>
           <p style={{ color: '#94a3b8', fontSize: '0.875rem' }}>
-            Authorized administrative access for TechGadgets Store
+            Authorized administrative access for Nexora
           </p>
         </div>
 

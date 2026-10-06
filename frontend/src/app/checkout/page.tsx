@@ -239,7 +239,7 @@ export default function CheckoutPage() {
                     name="customerPhone"
                     value={formData.customerPhone}
                     onChange={handleChange}
-                    placeholder="e.g. 0771234567 or +94771234567"
+                    placeholder="e.g. 0711093799 or +94711093799"
                     required
                   />
                 </div>

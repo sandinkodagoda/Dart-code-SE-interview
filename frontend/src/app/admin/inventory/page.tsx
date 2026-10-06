@@ -241,12 +241,45 @@ export default function AdminInventoryPage() {
                     </td>
                   </tr>
                 ) : (
-                  displayedProducts.map((p) => (
-                    <tr key={p.id} style={{ borderBottom: '1px solid var(--color-border)' }} className="hover:bg-slate-50">
-                      <td style={{ padding: '1rem 1.25rem' }}>
-                        <div style={{ fontWeight: 600, color: 'var(--color-text-primary)' }}>{p.name}</div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
-                          {p.category?.name} • {p.brand?.name}
+                  displayedProducts.map((p) => {
+                    const img = p.primaryImage?.imageUrl || p.images?.[0]?.imageUrl;
+                    return (
+                    <tr key={p.id} style={{ borderBottom: '1px solid #f1f5f9', transition: 'background-color 0.15s' }} className="hover:bg-slate-50/80">
+                      <td style={{ padding: '0.9rem 1.25rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+                          <div
+                            style={{
+                              width: '44px',
+                              height: '44px',
+                              borderRadius: '8px',
+                              overflow: 'hidden',
+                              backgroundColor: '#f1f5f9',
+                              flexShrink: 0,
+                              border: '1px solid #e2e8f0',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            {img ? (
+                              <img
+                                src={img}
+                                alt={p.name}
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                onError={(e) => {
+                                  (e.target as HTMLElement).style.display = 'none';
+                                }}
+                              />
+                            ) : (
+                              <Boxes size={18} style={{ color: '#94a3b8' }} />
+                            )}
+                          </div>
+                          <div>
+                            <div style={{ fontWeight: 700, color: '#0f172a' }}>{p.name}</div>
+                            <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                              {p.category?.name} • {p.brand?.name}
+                            </div>
+                          </div>
                         </div>
                       </td>
                       <td style={{ padding: '1rem 1.25rem', fontFamily: 'monospace', fontSize: '0.8125rem' }}>
@@ -283,7 +316,8 @@ export default function AdminInventoryPage() {
                         </Button>
                       </td>
                     </tr>
-                  ))
+                    );
+                  })
                 )}
               </tbody>
             </table>

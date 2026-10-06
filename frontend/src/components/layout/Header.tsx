@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
   Search,
@@ -18,6 +17,13 @@ import {
   SlidersHorizontal,
   Loader2,
   ArrowRight,
+  User,
+  CreditCard,
+  Truck,
+  Gamepad2,
+  Tag,
+  Percent,
+  Tablet,
 } from 'lucide-react';
 import { useCartStore } from '@/stores/cart.store';
 import { storeApi } from '@/lib/api/store';
@@ -41,6 +47,13 @@ export const Header: React.FC = () => {
 
   useEffect(() => {
     setMounted(true);
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   // Debounced search effect
@@ -113,16 +126,19 @@ export const Header: React.FC = () => {
       >
         <div className="container-custom" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span style={{ color: '#60a5fa', fontWeight: 600 }}>⚡ FLASH OFFER:</span>
+            <Truck size={14} color="#60a5fa" />
             <span>Free Islandwide Express Delivery on Orders Over LKR 10,000!</span>
           </div>
 
           <div style={{ display: 'none', gap: '1.25rem', alignItems: 'center' }} className="sm:flex">
             <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-              <ShieldCheck size={14} color="#10b981" /> Official Manufacturer Warranty
+              <ShieldCheck size={14} color="#10b981" /> 1-Year Official Warranty
             </span>
             <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-              <Phone size={14} color="#60a5fa" /> WhatsApp: +94 77 123 4567
+              <CreditCard size={14} color="#60a5fa" /> Secure Payments
+            </span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+              <Truck size={14} color="#a78bfa" /> Islandwide Delivery
             </span>
           </div>
         </div>
@@ -145,33 +161,20 @@ export const Header: React.FC = () => {
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '0.5rem',
-              fontWeight: 800,
-              fontSize: '1.45rem',
-              letterSpacing: '-0.03em',
-              color: '#0f172a',
               textDecoration: 'none',
               flexShrink: 0,
             }}
           >
-            <div
+            <img
+              src="/logo.svg"
+              alt="Nexora"
               style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '8px',
-                backgroundColor: 'var(--color-primary)',
-                color: '#ffffff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 900,
+                height: '38px',
+                width: 'auto',
+                objectFit: 'contain',
+                display: 'block',
               }}
-            >
-              TG
-            </div>
-            <span>
-              Tech<span style={{ color: 'var(--color-primary)' }}>Gadgets</span>
-            </span>
+            />
           </Link>
 
           {/* Search Bar with Live Autocomplete Dropdown (Desktop) */}
@@ -241,64 +244,150 @@ export const Header: React.FC = () => {
                   top: 'calc(100% + 8px)',
                   left: 0,
                   right: 0,
+                  minWidth: '100%',
                   backgroundColor: '#ffffff',
                   borderRadius: '16px',
-                  boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
-                  border: '1px solid #e2e8f0',
-                  zIndex: 50,
+                  boxShadow: '0 20px 40px -10px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.06)',
+                  zIndex: 100,
                   overflow: 'hidden',
                 }}
               >
                 {isSearching && searchResults.length === 0 ? (
-                  <div className="p-4 text-center text-xs text-slate-500 flex items-center justify-center gap-2">
-                    <Loader2 size={14} className="animate-spin text-blue-600" />
-                    Searching products...
+                  <div style={{ padding: '1.5rem', textAlign: 'center', fontSize: '0.85rem', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                    <Loader2 size={16} className="animate-spin" color="#2563eb" />
+                    <span>Searching products catalog...</span>
                   </div>
                 ) : searchResults.length > 0 ? (
                   <div>
-                    <div className="px-4 py-2.5 bg-slate-50/80 border-b border-slate-100 flex items-center justify-between text-[11px] font-semibold text-slate-500">
-                      <span>PRODUCTS SUGGESTIONS</span>
-                      <span>{searchResults.length} matches</span>
+                    <div
+                      style={{
+                        padding: '0.75rem 1.25rem',
+                        backgroundColor: '#f8fafc',
+                        borderBottom: '1px solid #f1f5f9',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        fontSize: '0.75rem',
+                        fontWeight: 800,
+                        color: '#64748b',
+                        letterSpacing: '0.05em',
+                        textTransform: 'uppercase',
+                      }}
+                    >
+                      <span>Suggested Products</span>
+                      <span style={{ backgroundColor: '#e2e8f0', color: '#475569', padding: '0.15rem 0.5rem', borderRadius: '9999px', fontSize: '0.7rem' }}>
+                        {searchResults.length} matches
+                      </span>
                     </div>
-                    <div className="divide-y divide-slate-100 max-h-80 overflow-y-auto">
+
+                    <div style={{ maxHeight: '360px', overflowY: 'auto' }}>
                       {searchResults.map((product) => {
                         const img =
-                          product.images?.[0] ||
-                          'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300';
+                          product.primaryImage?.imageUrl ||
+                          product.images?.[0]?.imageUrl ||
+                          'https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=300';
                         return (
                           <div
                             key={product.id}
                             onClick={() => handleSelectProduct(product.slug)}
-                            className="p-3 hover:bg-slate-50 flex items-center gap-3 cursor-pointer transition"
+                            style={{
+                              padding: '0.85rem 1.25rem',
+                              borderBottom: '1px solid #f8fafc',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '1rem',
+                              cursor: 'pointer',
+                              transition: 'background-color 0.15s ease',
+                            }}
+                            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f8fafc')}
+                            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
                           >
-                            <div className="relative w-12 h-12 rounded-lg bg-slate-100 flex-shrink-0 overflow-hidden border border-slate-200/60">
-                              <Image
+                            {/* Product Thumbnail */}
+                            <div
+                              style={{
+                                position: 'relative',
+                                width: '56px',
+                                height: '56px',
+                                borderRadius: '10px',
+                                backgroundColor: '#f8fafc',
+                                border: '1.5px solid #e2e8f0',
+                                flexShrink: 0,
+                                overflow: 'hidden',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              <img
                                 src={img}
                                 alt={product.name}
-                                fill
-                                sizes="48px"
-                                className="object-contain p-1"
+                                loading="lazy"
+                                style={{
+                                  width: '100%',
+                                  height: '100%',
+                                  objectFit: 'contain',
+                                  padding: '4px',
+                                }}
                                 onError={(e) => {
                                   const target = e.target as HTMLImageElement;
                                   target.src =
-                                    'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300';
+                                    'https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=300';
                                 }}
                               />
                             </div>
-                            <div className="flex-1 min-w-0">
-                              <h4 className="text-xs font-bold text-slate-900 truncate">
+
+                            {/* Details */}
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <h4
+                                style={{
+                                  fontSize: '0.875rem',
+                                  fontWeight: 700,
+                                  color: '#0f172a',
+                                  lineHeight: 1.35,
+                                  marginBottom: '0.2rem',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  whiteSpace: 'nowrap',
+                                }}
+                              >
                                 {product.name}
                               </h4>
-                              <p className="text-[11px] text-slate-500">
-                                {product.brand?.name || 'Brand'} · {product.category?.name || 'Category'}
+                              <p
+                                style={{
+                                  fontSize: '0.75rem',
+                                  color: '#64748b',
+                                  fontWeight: 500,
+                                }}
+                              >
+                                {product.brand?.name || 'Brand'} · {product.category?.name || 'Gadgets'}
                               </p>
                             </div>
-                            <div className="text-right">
-                              <div className="text-xs font-bold text-blue-600">
+
+                            {/* Price & Tag */}
+                            <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                              <div
+                                style={{
+                                  fontSize: '0.925rem',
+                                  fontWeight: 800,
+                                  color: '#2563eb',
+                                  lineHeight: 1.2,
+                                }}
+                              >
                                 {formatLKR(Number(product.price))}
                               </div>
                               {product.isFeatured && (
-                                <span className="inline-block text-[10px] text-emerald-600 font-semibold">
+                                <span
+                                  style={{
+                                    display: 'inline-block',
+                                    marginTop: '0.25rem',
+                                    fontSize: '0.7rem',
+                                    fontWeight: 700,
+                                    color: '#059669',
+                                    backgroundColor: '#ecfdf5',
+                                    padding: '0.1rem 0.45rem',
+                                    borderRadius: '9999px',
+                                  }}
+                                >
                                   Featured
                                 </span>
                               )}
@@ -307,23 +396,42 @@ export const Header: React.FC = () => {
                         );
                       })}
                     </div>
-                    <div className="p-3 bg-slate-50 border-t border-slate-100 text-center">
+
+                    {/* Footer Call to Action */}
+                    <div
+                      style={{
+                        padding: '0.85rem 1.25rem',
+                        backgroundColor: '#f8fafc',
+                        borderTop: '1px solid #f1f5f9',
+                        textAlign: 'center',
+                      }}
+                    >
                       <button
                         onClick={handleSearch}
-                        className="text-xs font-semibold text-blue-600 hover:text-blue-700 inline-flex items-center gap-1.5"
+                        style={{
+                          fontSize: '0.85rem',
+                          fontWeight: 700,
+                          color: '#2563eb',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '0.4rem',
+                          border: 'none',
+                          background: 'none',
+                          cursor: 'pointer',
+                        }}
                       >
-                        <span>View all results for &quot;{searchQuery}&quot;</span>
-                        <ArrowRight size={13} />
+                        <span>View all matching results for &ldquo;{searchQuery}&rdquo;</span>
+                        <ArrowRight size={14} />
                       </button>
                     </div>
                   </div>
                 ) : (
-                  <div className="p-6 text-center text-xs text-slate-500">
-                    <p className="font-semibold text-slate-700 mb-1">
-                      No products found for &quot;{searchQuery}&quot;
+                  <div style={{ padding: '2rem 1.5rem', textAlign: 'center', fontSize: '0.85rem', color: '#64748b' }}>
+                    <p style={{ fontWeight: 700, color: '#0f172a', marginBottom: '0.35rem' }}>
+                      No gadgets found for &ldquo;{searchQuery}&rdquo;
                     </p>
-                    <p className="text-slate-400">
-                      Try checking spelling or search by brand like Apple, Sony, Dell.
+                    <p style={{ color: '#94a3b8', fontSize: '0.8rem' }}>
+                      Try searching by brand like Apple, Sony, or Dell, or check your spelling.
                     </p>
                   </div>
                 )}
@@ -331,23 +439,26 @@ export const Header: React.FC = () => {
             )}
           </div>
 
-          {/* Right Action Icons: Shop, Cart, Mobile Menu */}
+          {/* Right Action Icons: Account, Cart, Mobile Menu */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            {/* Account Link */}
             <Link
-              href="/shop"
+              href="/admin/login"
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.4rem',
+                gap: '0.45rem',
                 fontWeight: 600,
                 fontSize: '0.9375rem',
-                color: 'var(--color-text-secondary)',
+                color: '#334155',
                 padding: '0.5rem 0.75rem',
-                borderRadius: '6px',
+                borderRadius: '8px',
+                textDecoration: 'none',
               }}
+              className="hidden sm:flex"
             >
-              <SlidersHorizontal size={18} />
-              <span>Catalog</span>
+              <User size={18} color="#475569" />
+              <span>Account</span>
             </Link>
 
             {/* Cart Drawer Trigger Button */}
@@ -360,28 +471,29 @@ export const Header: React.FC = () => {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.5rem',
-                backgroundColor: 'var(--color-primary-light)',
-                color: 'var(--color-primary-dark)',
-                padding: '0.55rem 1rem',
+                backgroundColor: 'transparent',
+                color: '#0f172a',
+                padding: '0.5rem 0.95rem',
                 borderRadius: '9999px',
                 fontWeight: 700,
                 fontSize: '0.9375rem',
-                border: 'none',
+                border: '1.5px solid #e2e8f0',
                 cursor: 'pointer',
               }}
             >
-              <ShoppingCart size={20} color="var(--color-primary)" />
+              <ShoppingCart size={19} color="#2563eb" />
               <span>Cart</span>
-              {mounted && itemCount > 0 && (
+              {mounted && (
                 <span
                   style={{
-                    backgroundColor: 'var(--color-primary)',
+                    backgroundColor: '#2563eb',
                     color: '#ffffff',
                     fontSize: '0.75rem',
                     fontWeight: 800,
-                    width: '20px',
+                    minWidth: '20px',
                     height: '20px',
-                    borderRadius: '50%',
+                    padding: '0 6px',
+                    borderRadius: '9999px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -392,15 +504,16 @@ export const Header: React.FC = () => {
               )}
             </button>
 
-            {/* Mobile Menu Toggle */}
+            {/* Mobile Menu Toggle (hidden on desktop) */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden"
+              className="mobile-only md:hidden"
               style={{
                 padding: '0.5rem',
                 color: 'var(--color-text-primary)',
-                display: 'flex',
-                alignItems: 'center',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
               }}
               aria-label="Toggle Navigation Menu"
             >
@@ -423,47 +536,74 @@ export const Header: React.FC = () => {
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '2rem',
+            gap: '1.75rem',
             overflowX: 'auto',
-            paddingTop: '0.5rem',
-            paddingBottom: '0.5rem',
+            paddingTop: '0.6rem',
+            paddingBottom: '0.6rem',
             fontSize: '0.875rem',
             fontWeight: 600,
-            color: 'var(--color-text-secondary)',
+            color: '#475569',
           }}
         >
-          <Link href="/shop" style={{ color: 'var(--color-primary)', fontWeight: 700 }}>
+          <Link href="/shop" style={{ color: '#2563eb', fontWeight: 700, borderBottom: '2px solid #2563eb', paddingBottom: '0.2rem', textDecoration: 'none' }}>
             All Products
           </Link>
-          <Link href="/shop?category=mobile-phones" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+          <Link href="/shop?category=mobile-phones" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', textDecoration: 'none', color: '#475569' }}>
             <Smartphone size={15} /> Smartphones
           </Link>
-          <Link href="/shop?category=laptops" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+          <Link href="/shop?category=laptops" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', textDecoration: 'none', color: '#475569' }}>
             <Laptop size={15} /> Laptops
           </Link>
-          <Link href="/shop?category=tablets">Tablets</Link>
-          <Link href="/shop?category=audio" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+          <Link href="/shop?category=tablets" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', textDecoration: 'none', color: '#475569' }}>
+            <Tablet size={15} /> Tablets
+          </Link>
+          <Link href="/shop?category=audio" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', textDecoration: 'none', color: '#475569' }}>
             <Headphones size={15} /> Audio
           </Link>
-          <Link href="/shop?category=smart-watches" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+          <Link href="/shop?category=smart-watches" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', textDecoration: 'none', color: '#475569' }}>
             <Watch size={15} /> Smart Watches
           </Link>
-          <Link href="/shop?category=accessories">Accessories</Link>
+          <Link href="/shop?category=accessories" style={{ textDecoration: 'none', color: '#475569' }}>
+            Accessories
+          </Link>
+          <Link href="/shop?category=laptops" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', textDecoration: 'none', color: '#475569' }}>
+            <Gamepad2 size={15} /> Gaming
+          </Link>
+          <Link href="/shop" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', textDecoration: 'none', color: '#475569' }}>
+            <Tag size={15} /> Brands
+          </Link>
+          <Link
+            href="/shop?deals=true"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.25rem',
+              backgroundColor: '#fee2e2',
+              color: '#dc2626',
+              padding: '0.15rem 0.55rem',
+              borderRadius: '9999px',
+              fontSize: '0.75rem',
+              fontWeight: 700,
+              marginLeft: 'auto',
+              textDecoration: 'none',
+            }}
+          >
+            <Percent size={12} /> Deals
+          </Link>
         </div>
       </div>
 
-      {/* 4. Mobile Drawer Menu */}
+      {/* 4. Mobile Drawer Menu (strictly hidden on desktop) */}
       {mobileMenuOpen && (
         <div
           style={{
             backgroundColor: '#ffffff',
             borderTop: '1px solid var(--color-border)',
             padding: '1.25rem',
-            display: 'flex',
             flexDirection: 'column',
             gap: '1rem',
           }}
-          className="md:hidden"
+          className="mobile-only md:hidden"
         >
           <form onSubmit={handleSearch} style={{ position: 'relative', width: '100%' }}>
             <input

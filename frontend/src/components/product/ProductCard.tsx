@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ShoppingCart, Check, Shield, Sparkles } from 'lucide-react';
+import { ShoppingCart, Check, Shield, Sparkles, Heart } from 'lucide-react';
 import { Product } from '@/types';
 import { Price } from '../ui/Price';
 import { Badge } from '../ui/Badge';
@@ -14,6 +14,7 @@ interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [added, setAdded] = useState(false);
+  const [isWishlisted, setIsWishlisted] = useState(false);
   const addItem = useCartStore((state) => state.addItem);
 
   const fallbackImage = 'https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=600';
@@ -76,6 +77,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           display: 'block',
           overflow: 'hidden',
           borderBottom: '1px solid #f1f5f9',
+          borderTopLeftRadius: '16px',
+          borderTopRightRadius: '16px',
         }}
       >
         <img
@@ -87,12 +90,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           }}
           style={{
             position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
+            top: '0.75rem',
+            left: '0.75rem',
+            width: 'calc(100% - 1.5rem)',
+            height: 'calc(100% - 1.5rem)',
             objectFit: 'contain',
-            padding: '1.25rem',
+            borderRadius: '16px',
             transition: 'transform 0.3s ease',
           }}
           onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.06)')}
@@ -114,43 +117,82 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           {discountPercent && discountPercent > 0 && (
             <span
               style={{
-                backgroundColor: '#ef4444',
+                backgroundColor: '#f43f5e',
                 color: '#ffffff',
-                fontSize: '0.7rem',
+                fontSize: '0.725rem',
                 fontWeight: 800,
-                padding: '0.2rem 0.5rem',
-                borderRadius: '6px',
-                boxShadow: '0 2px 4px rgba(239, 68, 68, 0.3)',
+                padding: '0.2rem 0.65rem',
+                borderRadius: '9999px',
+                boxShadow: '0 2px 6px rgba(244, 63, 94, 0.35)',
               }}
             >
               -{discountPercent}%
             </span>
           )}
           {product.isFeatured && (
-            <Badge variant="primary" size="sm">
+            <span
+              style={{
+                backgroundColor: '#2563eb',
+                color: '#ffffff',
+                fontSize: '0.675rem',
+                fontWeight: 700,
+                padding: '0.15rem 0.5rem',
+                borderRadius: '9999px',
+              }}
+            >
               Featured
-            </Badge>
+            </span>
           )}
         </div>
 
-        {/* Badges Overlay (Top-Right: Stock Status) */}
+        {/* Top-Right: Wishlist Heart & Stock Status */}
         <div
           style={{
             position: 'absolute',
             top: '0.75rem',
             right: '0.75rem',
-            zIndex: 2,
+            zIndex: 3,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-end',
+            gap: '0.35rem',
           }}
         >
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsWishlisted(!isWishlisted);
+            }}
+            type="button"
+            aria-label="Save to Wishlist"
+            style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '50%',
+              backgroundColor: 'rgba(255, 255, 255, 0.9)',
+              border: '1px solid #e2e8f0',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              color: isWishlisted ? '#f43f5e' : '#94a3b8',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
+              transition: 'all 0.15s ease',
+            }}
+          >
+            <Heart size={16} fill={isWishlisted ? '#f43f5e' : 'none'} />
+          </button>
+
           {isOutOfStock ? (
             <span
               style={{
                 backgroundColor: '#fee2e2',
                 color: '#991b1b',
-                fontSize: '0.7rem',
+                fontSize: '0.675rem',
                 fontWeight: 700,
-                padding: '0.2rem 0.5rem',
-                borderRadius: '6px',
+                padding: '0.15rem 0.45rem',
+                borderRadius: '9999px',
               }}
             >
               Out of Stock
@@ -210,7 +252,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               fontWeight: 700,
             }}
           >
-            <span>{product.brand?.name || 'TechGadgets'}</span>
+            <span>{product.brand?.name || 'Nexora'}</span>
             <span style={{ color: '#94a3b8' }}>{product.category?.name}</span>
           </div>
 

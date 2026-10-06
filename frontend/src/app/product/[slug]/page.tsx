@@ -162,6 +162,10 @@ export default function ProductDetailPage() {
             <img
               src={activeImage}
               alt={product.name}
+              onError={(e) => {
+                e.currentTarget.src =
+                  'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800';
+              }}
               style={{
                 maxWidth: '100%',
                 maxHeight: '380px',
@@ -317,7 +321,7 @@ export default function ProductDetailPage() {
 
             {/* Direct WhatsApp Quick Buy */}
             <a
-              href={`https://wa.me/94771234567?text=${encodeURIComponent(`Hi TechGadgets, I want to inquire about purchasing: ${product.name} (SKU: ${product.sku}) priced at LKR ${Number(product.price).toLocaleString('en-LK')}`)}`}
+              href={`https://wa.me/94711093799?text=${encodeURIComponent(`Hi Nexora, I want to inquire about purchasing: ${product.name} (SKU: ${product.sku}) priced at LKR ${Number(product.price).toLocaleString('en-LK')}`)}`}
               target="_blank"
               rel="noreferrer"
             >

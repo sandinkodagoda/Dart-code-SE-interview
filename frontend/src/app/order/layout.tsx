@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Order Tracking & Confirmation | TechGadgets Store',
+  title: 'Order Tracking & Confirmation | Nexora',
   description:
     'Track your order fulfillment milestone, payment verification, and delivery dispatch details in real-time.',
 };

@@ -101,6 +101,27 @@ export const adminApi = {
     return res.data.data;
   },
 
+  // ── Image Uploads (WebP 1:1 format) ──────────────────────────
+  uploadImage: async (
+    file: File,
+    folder: 'products' | 'categories' | 'general' = 'general',
+    isSquare: boolean = false,
+  ): Promise<{ url: string; fullUrl: string; filename: string; format: string }> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const res = await apiClient.post<ApiResponse<{ url: string; fullUrl: string; filename: string; format: string }>>(
+      '/uploads/image',
+      formData,
+      {
+        params: { folder, isSquare: isSquare ? 'true' : 'false' },
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      },
+    );
+    return res.data.data;
+  },
+
   // ── Categories Management ────────────────────────────────────
   getCategories: async (params?: {
     search?: string;
