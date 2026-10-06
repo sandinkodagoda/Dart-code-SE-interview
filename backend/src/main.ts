@@ -1,7 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import { Logger, ValidationPipe } from '@nestjs/common';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import helmet from 'helmet';
+import * as path from 'path';
+import * as fs from 'fs';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
@@ -9,7 +12,7 @@ import { TransformInterceptor } from './common/interceptors/transform.intercepto
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   const configService = app.get(ConfigService);
   const port = configService.get<number>('app.port', 5000);
@@ -17,8 +20,23 @@ async function bootstrap() {
   const frontendUrl = configService.get<string>('app.frontendUrl', 'http://localhost:3000');
   const nodeEnv = configService.get<string>('app.nodeEnv', 'development');
 
-  // Security headers with Helmet
-  app.use(helmet());
+  // Ensure uploads directory exists
+  const uploadsDir = path.resolve(process.cwd(), 'uploads');
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  }
+
+  // Serve static assets from uploads directory
+  app.useStaticAssets(uploadsDir, {
+    prefix: '/uploads/',
+  });
+
+  // Security headers with Helmet (configured to allow cross-origin image loads)
+  app.use(
+    helmet({
+      crossOriginResourcePolicy: { policy: 'cross-origin' },
+    }),
+  );
 
   // Global prefix (e.g. /api/v1)
   app.setGlobalPrefix(apiPrefix);
@@ -80,7 +98,7 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('docs', app, document, {
-    customSiteTitle: 'TechGadgets API Docs',
+    customSiteTitle: 'Nexora API Docs',
   });
 
   await app.listen(port);

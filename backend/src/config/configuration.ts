@@ -5,7 +5,7 @@ export const configuration = (): Configuration => ({
     nodeEnv: process.env.NODE_ENV || 'development',
     port: parseInt(process.env.PORT || '3000', 10),
     apiPrefix: process.env.API_PREFIX || 'api/v1',
-    appName: process.env.APP_NAME || 'TechGadgets Store API',
+    appName: process.env.APP_NAME || 'Nexora API',
     frontendUrl: process.env.FRONTEND_URL || 'http://localhost:3000',
   },
   database: {
@@ -32,6 +32,6 @@ export const configuration = (): Configuration => ({
       'https://sandbox.payhere.lk/pay/checkout',
   },
   whatsapp: {
-    businessNumber: process.env.WHATSAPP_BUSINESS_NUMBER || '94771234567',
+    businessNumber: process.env.WHATSAPP_BUSINESS_NUMBER || '94711093799',
   },
 });

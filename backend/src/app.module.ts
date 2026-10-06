@@ -16,6 +16,7 @@ import { PaymentsModule } from './modules/payments/payments.module';
 import { WhatsappModule } from './modules/whatsapp/whatsapp.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { AuditModule } from './modules/audit/audit.module';
+import { UploadsModule } from './modules/uploads/uploads.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -44,6 +45,7 @@ import { AppService } from './app.service';
     WhatsappModule,
     DashboardModule,
     AuditModule,
+    UploadsModule,
   ],
   controllers: [AppController],
   providers: [

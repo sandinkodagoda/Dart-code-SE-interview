@@ -24,12 +24,12 @@ export class WhatsappService {
   buildWhatsAppOrderMessage(order: any): WhatsAppOrderResult {
     const businessNumber = this.configService.get<string>(
       'whatsapp.businessNumber',
-      '94771234567',
+      '94711093799',
     );
 
     const lines: string[] = [];
 
-    lines.push('🛒 *NEW ORDER — TechGadgets Store*');
+    lines.push('🛒 *NEW ORDER — Nexora*');
     lines.push('━━━━━━━━━━━━━━━━━━━━━━━━');
     lines.push(`📦 *Order Number:* ${order.orderNumber}`);
     lines.push(`📅 *Date:* ${new Date(order.createdAt).toLocaleString('en-LK', { timeZone: 'Asia/Colombo' })}`);

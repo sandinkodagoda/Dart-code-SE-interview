@@ -46,7 +46,7 @@ export class CreateCategoryDto {
     example: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600',
   })
   @IsOptional()
-  @IsUrl()
+  @IsString()
   imageUrl?: string;
 
   @ApiPropertyOptional({
