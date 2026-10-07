@@ -107,25 +107,17 @@ export default function AdminLayout({
   const pageTitle = activeNavItem ? activeNavItem.label : 'Admin Portal';
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#f8fafc', color: '#0f172a' }}>
+    <div className="admin-shell">
       {/* ── Left Navigation Sidebar ─────────────────────────── */}
       <aside
+        className={`admin-sidebar ${sidebarOpen ? 'mobile-open' : ''}`}
         style={{
-          width: '270px',
           backgroundColor: '#090d16',
           borderRight: '1px solid #1e293b',
           color: '#e2e8f0',
           display: 'flex',
           flexDirection: 'column',
-          position: 'fixed',
-          top: 0,
-          bottom: 0,
-          left: 0,
-          zIndex: 90,
-          transform: sidebarOpen ? 'translateX(0)' : undefined,
-          transition: 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
         }}
-        className="max-lg:-translate-x-full lg:translate-x-0"
       >
         {/* Brand Header */}
         <div
@@ -147,7 +139,8 @@ export default function AdminLayout({
           <button
             onClick={() => setSidebarOpen(false)}
             style={{ color: '#94a3b8', backgroundColor: 'transparent', border: 'none', cursor: 'pointer' }}
-            className="lg:hidden"
+            className="admin-mobile-toggle"
+            aria-label="Close sidebar menu"
           >
             <X size={20} />
           </button>
@@ -299,23 +292,15 @@ export default function AdminLayout({
             position: 'fixed',
             inset: 0,
             backgroundColor: 'rgba(0, 0, 0, 0.6)',
-            zIndex: 80,
+            zIndex: 95,
             backdropFilter: 'blur(2px)',
           }}
-          className="lg:hidden"
+          className="admin-mobile-toggle"
         />
       )}
 
       {/* ── Main Workspace Area ────────────────────────────── */}
-      <div
-        style={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          minWidth: 0,
-        }}
-        className="lg:ml-[270px]"
-      >
+      <div className="admin-workspace">
         {/* Top Header */}
         <header
           style={{
@@ -325,7 +310,7 @@ export default function AdminLayout({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: '0 1.75rem',
+            padding: '0 2rem',
             position: 'sticky',
             top: 0,
             zIndex: 40,
@@ -335,8 +320,9 @@ export default function AdminLayout({
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <button
               onClick={() => setSidebarOpen(true)}
-              style={{ color: '#0f172a', backgroundColor: 'transparent', border: 'none', cursor: 'pointer' }}
-              className="lg:hidden"
+              style={{ color: '#0f172a', backgroundColor: 'transparent', border: 'none', cursor: 'pointer', padding: '0.25rem' }}
+              className="admin-mobile-toggle"
+              aria-label="Open navigation sidebar"
             >
               <Menu size={22} />
             </button>
@@ -399,7 +385,7 @@ export default function AdminLayout({
         </header>
 
         {/* Content View */}
-        <main style={{ flex: 1, padding: '2rem 1.75rem 4rem', minWidth: 0, maxWidth: '1440px', width: '100%', margin: '0 auto' }}>
+        <main style={{ flex: 1, padding: '2rem 2rem 4rem', minWidth: 0, width: '100%', boxSizing: 'border-box' }}>
           {children}
         </main>
       </div>
