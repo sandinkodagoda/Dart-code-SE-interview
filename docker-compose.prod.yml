@@ -1,0 +1,51 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+
+    container_name: nexora-backend
+    restart: unless-stopped
+
+    env_file:
+      - .env.production
+
+    ports:
+      - "127.0.0.1:5100:5000"
+
+    volumes:
+      - nexora_uploads:/usr/src/app/uploads
+
+    networks:
+      - nexora_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+        NEXT_PUBLIC_WHATSAPP_NUMBER: ${NEXT_PUBLIC_WHATSAPP_NUMBER}
+
+    container_name: nexora-frontend
+    restart: unless-stopped
+
+    environment:
+      NODE_ENV: production
+
+    ports:
+      - "127.0.0.1:3100:3000"
+
+    depends_on:
+      - backend
+
+    networks:
+      - nexora_network
+
+volumes:
+  nexora_uploads:
+    name: nexora_uploads
+
+networks:
+  nexora_network:
+    external: true
