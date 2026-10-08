@@ -1,0 +1,75 @@
+name: NEXORA Production Deployment
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nexora-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to VPS
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Deploy NEXORA
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: 22
+          command_timeout: 25m
+          script: |
+            set -eu
+
+            cd /opt/nexora
+
+            echo "Fetching latest changes..."
+            git fetch origin main
+            git merge --ff-only origin/main
+
+            echo "Building production containers..."
+            docker compose \
+              --env-file .env.production \
+              -f docker-compose.prod.yml \
+              build
+
+            echo "Applying database migrations..."
+            docker compose \
+              --env-file .env.production \
+              -f docker-compose.prod.yml \
+              run --rm backend \
+              npx prisma migrate deploy
+
+            echo "Starting updated containers..."
+            docker compose \
+              --env-file .env.production \
+              -f docker-compose.prod.yml \
+              up -d --no-build
+
+            echo "Checking frontend..."
+            curl --fail --silent --show-error \
+              --retry 10 \
+              --retry-delay 3 \
+              --retry-connrefused \
+              http://127.0.0.1:3100/ \
+              -o /dev/null
+
+            echo "Checking backend..."
+            curl --fail --silent --show-error \
+              --retry 10 \
+              --retry-delay 3 \
+              --retry-connrefused \
+              http://127.0.0.1:5100/api/v1/products \
+              -o /dev/null
+
+            echo "NEXORA deployment successful!"
