@@ -310,7 +310,7 @@ export default function AdminLayout({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: '0 2rem',
+            padding: '0 clamp(1rem, 4vw, 2rem)',
             position: 'sticky',
             top: 0,
             zIndex: 40,
@@ -385,7 +385,7 @@ export default function AdminLayout({
         </header>
 
         {/* Content View */}
-        <main style={{ flex: 1, padding: '2rem 2rem 4rem', minWidth: 0, width: '100%', boxSizing: 'border-box' }}>
+        <main style={{ flex: 1, padding: 'clamp(1rem, 4vw, 2rem) clamp(1rem, 4vw, 2rem) 4rem', minWidth: 0, width: '100%', boxSizing: 'border-box' }}>
           {children}
         </main>
       </div>
