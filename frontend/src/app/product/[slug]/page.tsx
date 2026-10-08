@@ -209,7 +209,8 @@ export default function ProductDetailPage() {
   const storageOptions = ['256GB', '512GB', '1TB'];
 
   return (
-    <div className="container-custom animate-fade-in" style={{ padding: '2rem 1.25rem 5rem' }}>
+    <div className="animate-fade-in" style={{ backgroundColor: '#fafcff', backgroundImage: 'radial-gradient(at 100% 0%, rgba(224, 242, 254, 0.4) 0px, transparent 50%), radial-gradient(at 0% 100%, rgba(243, 232, 255, 0.4) 0px, transparent 50%)', minHeight: '100vh', paddingBottom: '5rem' }}>
+      <div className="container-custom" style={{ padding: '2rem 1.25rem' }}>
       {/* ── 1. BREADCRUMBS ─────────────────────────────────── */}
       <nav
         style={{
@@ -251,17 +252,18 @@ export default function ProductDetailPage() {
           {/* Main Photo Card */}
           <div
             style={{
-              backgroundColor: '#ffffff',
-              borderRadius: '24px',
-              border: '1px solid #e2e8f0',
+              backgroundColor: 'rgba(255, 255, 255, 0.7)',
+              backdropFilter: 'blur(16px)',
+              borderRadius: '32px',
+              border: '1px solid rgba(255, 255, 255, 0.5)',
               overflow: 'hidden',
-              padding: '2.5rem',
+              padding: '3rem',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              minHeight: '460px',
+              minHeight: '520px',
               position: 'relative',
-              boxShadow: '0 20px 40px -10px rgba(15, 23, 42, 0.08)',
+              boxShadow: '0 25px 50px -12px rgba(15, 23, 42, 0.08), inset 0 0 0 1px rgba(255,255,255,0.2)',
             }}
           >
             <img
@@ -273,10 +275,13 @@ export default function ProductDetailPage() {
               }}
               style={{
                 maxWidth: '100%',
-                maxHeight: '400px',
+                maxHeight: '440px',
                 objectFit: 'contain',
-                transition: 'transform 0.35s ease',
+                transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                filter: 'drop-shadow(0 20px 30px rgba(0,0,0,0.15))',
               }}
+              onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
+              onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
             />
 
             {/* Badges on Top Left */}
@@ -586,37 +591,43 @@ export default function ProductDetailPage() {
           {/* Pricing Card */}
           <div
             style={{
-              backgroundColor: 'rgba(255, 255, 255, 0.6)',
-              backdropFilter: 'blur(12px)',
-              borderRadius: '24px',
-              border: '1px solid rgba(226, 232, 240, 0.8)',
-              boxShadow: '0 10px 30px -5px rgba(0,0,0,0.05)',
-              padding: '1.35rem 1.6rem',
-              marginBottom: '1.75rem',
+              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.5) 100%)',
+              backdropFilter: 'blur(20px)',
+              borderRadius: '28px',
+              border: '1px solid rgba(255, 255, 255, 0.6)',
+              boxShadow: '0 10px 40px -10px rgba(37, 99, 235, 0.1)',
+              padding: '1.75rem 2rem',
+              marginBottom: '2rem',
+              position: 'relative',
+              overflow: 'hidden',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '1rem', flexWrap: 'wrap' }}>
-              <span style={{ fontSize: '2.15rem', fontWeight: 900, color: '#0f172a', letterSpacing: '-0.02em' }}>
+            {/* Subtle glow inside card */}
+            <div style={{ position: 'absolute', top: '-50%', left: '-50%', width: '200%', height: '200%', background: 'radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.08) 0%, transparent 50%)', pointerEvents: 'none' }} />
+            
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '1rem', flexWrap: 'wrap', position: 'relative', zIndex: 1 }}>
+              <span style={{ fontSize: '2.5rem', fontWeight: 900, background: 'linear-gradient(to right, #0f172a, #334155)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-0.03em' }}>
                 {formatLKR(currentPrice)}
               </span>
               {compareAtPrice && compareAtPrice > currentPrice && (
-                <span style={{ fontSize: '1.15rem', color: '#94a3b8', textDecoration: 'line-through', fontWeight: 500 }}>
+                <span style={{ fontSize: '1.25rem', color: '#94a3b8', textDecoration: 'line-through', fontWeight: 600 }}>
                   {formatLKR(compareAtPrice)}
                 </span>
               )}
               {discountPercent && (
                 <span
                   style={{
-                    backgroundColor: '#dcfce7',
-                    color: '#15803d',
+                    backgroundColor: '#10b981',
+                    color: '#ffffff',
                     fontSize: '0.85rem',
                     fontWeight: 800,
-                    padding: '0.3rem 0.75rem',
+                    padding: '0.35rem 0.85rem',
                     borderRadius: '9999px',
-                    letterSpacing: '0.01em',
+                    letterSpacing: '0.02em',
+                    boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)',
                   }}
                 >
-                  -{discountPercent}% off
+                  -{discountPercent}% OFF
                 </span>
               )}
             </div>
@@ -1093,6 +1104,7 @@ export default function ProductDetailPage() {
           </div>
         </section>
       )}
+    </div>
     </div>
   );
 }

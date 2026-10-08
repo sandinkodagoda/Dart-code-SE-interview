@@ -56,20 +56,60 @@ jobs:
               -f docker-compose.prod.yml \
               up -d --no-build
 
-            echo "Checking frontend..."
+            echo "Waiting for frontend..."
+            frontend_ready=false
+
+            for i in $(seq 1 30); do
+              if curl --fail --silent \
+                --max-time 5 \
+                http://127.0.0.1:3100/ \
+                -o /dev/null; then
+                frontend_ready=true
+                echo "Frontend is healthy!"
+                break
+              fi
+
+              echo "Frontend not ready (attempt $i/30)"
+              sleep 3
+            done
+
+            if [ "$frontend_ready" != "true" ]; then
+              echo "Frontend health check failed!"
+              docker logs --tail 50 nexora-frontend
+              exit 1
+            fi
+
+            echo "Waiting for backend..."
+            backend_ready=false
+
+            for i in $(seq 1 30); do
+              if curl --fail --silent \
+                --max-time 5 \
+                http://127.0.0.1:5100/api/v1/products \
+                -o /dev/null; then
+                backend_ready=true
+                echo "Backend is healthy!"
+                break
+              fi
+
+              echo "Backend not ready (attempt $i/30)"
+              sleep 3
+            done
+
+            if [ "$backend_ready" != "true" ]; then
+              echo "Backend health check failed!"
+              docker logs --tail 50 nexora-backend
+              exit 1
+            fi
+
+            echo "Checking public HTTPS website..."
             curl --fail --silent --show-error \
-              --retry 10 \
-              --retry-delay 3 \
-              --retry-connrefused \
-              http://127.0.0.1:3100/ \
+              https://nexoradummy.duckdns.org/ \
               -o /dev/null
 
-            echo "Checking backend..."
+            echo "Checking public HTTPS API..."
             curl --fail --silent --show-error \
-              --retry 10 \
-              --retry-delay 3 \
-              --retry-connrefused \
-              http://127.0.0.1:5100/api/v1/products \
+              https://nexoradummy.duckdns.org/api/v1/products \
               -o /dev/null
 
             echo "NEXORA deployment successful!"
